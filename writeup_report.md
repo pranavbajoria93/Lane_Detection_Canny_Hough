@@ -58,14 +58,16 @@ My pipeline consisted of 5 steps.
 7. overlaying the lines on to the original image by performing a weighted addition
 ![alt_text][overlayed_weighted]
 
-### 2. Identify potential shortcomings with your current pipeline
-One potential shortcoming would be what would happen when ... 
-
-Another shortcoming could be ...
-
+### 2. potential shortcomings with the current pipeline
+Following are some drawbacks of this pipeline
+* The region of interest has to be manually set, hence not robust
+* This will not work for curved lanes
+* A straight line equation is used to fit the detected edges, due to which curvy lanes can not be fit well
+* Edge detection might fail in poor weather conditions or bad lighting as all the hyperparameters are tuned and kept static
 
 ### 3. Suggest possible improvements to your pipeline
-
-A possible improvement would be to ...
-
-Another potential improvement could be to ...
+Following are the possible improvements to this pipeline
+* Use more sophisticated algorithms like RANSAC to interpolate and find the best fit for the lane
+* Use higher degree polynomial functions to properly fit curves.
+* Use night vision camera to keep detecting lanes even in poor lighting
+* use sensor fusion from multiple cameras 
