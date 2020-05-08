@@ -8,6 +8,14 @@ Overview
 
 When we drive, we use our eyes to decide where to go.  The lines on the road that show us where the lanes are act as our constant reference for where to steer the vehicle.  Naturally, one of the first things we would like to do in developing a self-driving car is to automatically detect lane lines using an algorithm.
 
+
+## Files
+* The main code can be found in P1.ipynb
+* The writeup report can be found in writeup_report.md
+* The inputs and the output for single images are stored in test_images directory
+* The input to the video pipeline is test_videos directory and their respective outputs in the test_videos_output directory
+
+
 ## Write-up Report
 
 The goals / steps of this project are the following:
@@ -77,9 +85,7 @@ Following are the possible improvements to this pipeline
 ## Steps to run the project
 ---
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to set up the environment for this project. ##
-
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) if you haven't already.
+**Step 1:** Set up the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) if you haven't already. You should install the starter kit to set up the environment for this project.
 
 **Step 2:** Open the code in a Jupyter Notebook
 
@@ -90,9 +96,5 @@ To start Jupyter in your browser, use terminal to navigate to your project direc
 A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  
 
 **Step 3:** Use shift enter to run all the cells one by one or use the 'run all' option under 'cells'.
-
-## Files
-* The main code can be found in P1.ipynb
-* The writeup report can be found in 
 
 
