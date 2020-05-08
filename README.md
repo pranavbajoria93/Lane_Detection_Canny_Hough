@@ -8,49 +8,93 @@ Overview
 
 When we drive, we use our eyes to decide where to go.  The lines on the road that show us where the lanes are act as our constant reference for where to steer the vehicle.  Naturally, one of the first things we would like to do in developing a self-driving car is to automatically detect lane lines using an algorithm.
 
-In this project you will detect lane lines in images using Python and OpenCV.  OpenCV means "Open-Source Computer Vision", which is a package that has many useful tools for analyzing images.  
 
-To complete the project, two files will be submitted: a file containing project code and a file containing a brief write up explaining your solution. We have included template files to be used both for the [code](https://github.com/udacity/CarND-LaneLines-P1/blob/master/P1.ipynb) and the [writeup](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md).The code file is called P1.ipynb and the writeup template is writeup_template.md 
+## Files
+* The main code can be found in P1.ipynb
+* The writeup report can be found in writeup_report.md
+* The inputs and the output for single images are stored in test_images directory
+* The input to the video pipeline is test_videos directory and their respective outputs in the test_videos_output directory
 
-To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
+
+## Write-up Report
+
+The goals / steps of this project are the following:
+* Make a pipeline that finds lane lines on the road
+* Reflect on your work in a written report
 
 
-Creating a Great Writeup
+[//]: # (Image References)
+
+[image1]: ./examples/grayscale.jpg "Grayscale"
+[grayscale]: ./test_images/gray_scale.jpg "gray_scale"
+[blurred]: ./test_images/blurred.jpg "blurred"
+[canny_edges]: ./test_images/canny_edges.jpg "canny_edges"
+[region_of_interest]: ./test_images/region_of_interest.jpg "region_of_interest"
+[with_lines_after_hough]: ./test_images/with_lines_after_hough.jpg "with_lines_after_hough"
+[overlayed_weighted]: ./test_images/overlayed_weighted.jpg "overlayed_weighted"
 ---
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
 
-1. Describe the pipeline
+### Reflection
 
-2. Identify any shortcomings
+### 1. Pipeline
 
-3. Suggest possible improvements
+My pipeline consisted of 5 steps. 
+1. converting the images to grayscale
+![alt text][grayscale]
 
-We encourage using images in your writeup to demonstrate how your pipeline works.  
+2. Blurring the grayscale image using opencv's gaussian blur with a kernel size of 5x5
+![alt_text][blurred]
 
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
+3. using the opencv canny edges filter, using low threshold = 40 and high threshold = 120
+![alt_text][canny_edges]
 
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
+4. applying a region of interest function by giving a polygon with 4 relavent vertices that appropriately selected the region of interest.
+![alt_text][region_of_interest]
 
+5. using hough lines to find small linesegments. This needed a lot of hyperparameter tuning to get it to work well on all the images.
 
-The Project
+6. modifying the draw_lines() function to draw single optimum line for each left and right boundary of the lane that best fits the smaller lines that were detected by the hough.
+  To do this, I followed the following series of steps:
+  * computed slope and y intercept for each line in the hough lines
+  * performed some sanity checks by disregarding all the slopes that were either too steep or too flat, i.e. m<abs(0.3) or m>abs(1)
+  * sorted and stored left and right slopes and intercepts in separate list based on a sign check on the slope
+  * took a mean of both slopes and intercepts to average the line so that we get the optimum parameters of the line that fits best
+  * calculated the extreme coordinates based on the image's shape that satisfied the left line and the right line equation
+  * drew lines using these coordinates and updated the cache
+  * for any empty list errors, which means there were no sane lines found by the hough lines function, used the cached coordinates to draw and retain the previously computed lines (useful on videos).
+  * used the ROI again to limit the left and right lanes to the actual lanes.
+![alt_text][with_lines_after_hough]
+
+7. overlaying the lines on to the original image by performing a weighted addition
+![alt_text][overlayed_weighted]
+
+### 2. potential shortcomings with the current pipeline
+Following are some drawbacks of this pipeline
+* The region of interest has to be manually set, hence not robust
+* This will not work for curved lanes
+* A straight line equation is used to fit the detected edges, due to which curvy lanes can not be fit well
+* Edge detection might fail in poor weather conditions or bad lighting as all the hyperparameters are tuned and kept static
+
+### 3. Suggest possible improvements to your pipeline
+Following are the possible improvements to this pipeline
+* Use more sophisticated algorithms like RANSAC to interpolate and find the best fit for the lane
+* Use higher degree polynomial functions to properly fit curves.
+* Use night vision camera to keep detecting lanes even in poor lighting
+* use sensor fusion from multiple cameras 
+
+## Steps to run the project
 ---
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
-
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) if you haven't already.
+**Step 1:** Set up the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) if you haven't already. You should install the starter kit to set up the environment for this project.
 
 **Step 2:** Open the code in a Jupyter Notebook
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out [Udacity's free course on Anaconda and Jupyter Notebooks](https://classroom.udacity.com/courses/ud1111) to get started.
-
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
+To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
 
 `> jupyter notebook`
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
+A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
+**Step 3:** Use shift enter to run all the cells one by one or use the 'run all' option under 'cells'.
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
 
